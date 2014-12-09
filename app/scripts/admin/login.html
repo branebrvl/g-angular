@@ -1,10 +1,10 @@
 <h1>Login</h1>
 
-<div class="alert alert-danger" ng-show="wrongCredentials">
+<div class="alert alert-danger" ng-show="vm.wrongCredentials">
   Wrong Credentials.
 </div>
 
-<form class="form" ng-submit="login()" novalidate name="loginForm">
+<form class="form" ng-submit="vm.login()" novalidate name="loginForm">
   <div class="form-group" ng-class="{'has-error' : loginForm.email.$invalid && loginForm.email.$dirty, 'has-success' : loginForm.email.$valid && loginForm.email.$dirty }">
     <label class="control-label" for="email">Email</label>
     <input class="form-control" type="email" name="email" ng-model="user.email" required rm-focus />

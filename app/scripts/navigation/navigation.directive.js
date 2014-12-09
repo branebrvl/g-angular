@@ -3,11 +3,14 @@
 
   angular
     .module('app.navigation')
-    .directive('navbar', function () {
+    .directive('navbar', navbar);
+
+  function navbar() {
     return {
       restrict: 'E',
       templateUrl: 'scripts/navigation/navbar.html',
-      controller: 'NavigationController'
+      controller: 'NavigationController',
+      controllerAs: 'vm'
     };
-  });
+  }
 })();

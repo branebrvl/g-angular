@@ -3,29 +3,34 @@
 
   angular
     .module('app.admin')
-    .controller('LoginController', function ($scope, auth, $location) {
-    $scope.user = {
+    .controller('LoginController', LoginController);
+
+  LoginController.$inject = ['$scope', 'auth', '$location'];
+
+  function LoginController($scope, auth, $location) {
+    var vm = this;
+
+    vm.user = {
       email: "",
       password: ""
     };
-    $scope.wrongCredentials = false;
+    vm.wrongCredentials = false;
 
-    $scope.login = function () {
+    vm.login = function () {
       if ($scope.loginForm.$valid) {
-        var promise = auth.login($scope.user);
-        promise.then(success, error);
+        auth.login(vm.user).then(success, error);
       } else {
-        $scope.loginForm.submitted = true;
+        vm.loginForm.submitted = true;
       }
     };
 
-    var success = function (response) {
+    function success(response) {
       localStorage.setItem('auth_token', response.data.auth_token);
-      $location.path('/admin');
-    };
+      // $location.path('/admin');
+    }
 
-    var error = function (response) {
-      $scope.wrongCredentials = true;
-    };
-  });
+    function error(response) {
+      vm.wrongCredentials = true;
+    }
+  }
 })();

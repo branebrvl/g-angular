@@ -3,7 +3,11 @@
 
   angular
     .module('app.admin')
-    .service('auth', function ($http) {
+    .service('auth', auth);
+    
+    auth.$inject = ['$http'];
+
+    function auth($http) {
       this.login = function (user) {
         return $http.post('/api/login', {
           email: user.email,
@@ -11,15 +15,8 @@
         });
       };
 
-      this.logout = function () {
-        return $http({
-          method: 'DELETE',
-          url: '/api/logout'
-        });
-      };
-
       this.isLoggedIn = function () {
         return (localStorage.getItem('auth_token')) ? true : false;
       };
-  });
+  }
 })();

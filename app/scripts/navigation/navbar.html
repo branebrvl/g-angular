@@ -10,13 +10,13 @@
 
   <div class="navbar-collapse collapse" id="navbar-contents">
     <ul class="nav navbar-nav">
-      <li ng-class="{active:isActive('/')}"><a ng-href="/">Home</a></li>
-      <li class="visible-xs" ng-show="isLoggedIn()"><a ng-click="logout()">Logout</a></li>
-      <li class="visible-xs" ng-class="{active:isActive('/login')}"><a ng-href="/#/login">Login</a></li>
+      <li ng-class="{active:vm.isActive('/')}"><a ng-href="/">Home</a></li>
+      <li class="visible-xs" ng-show="vm.isLoggedIn()"><a ng-click="vm.logout()">Logout</a></li>
+      <li class="visible-xs" ng-class="{active:vm.isActive('/login')}"><a ng-href="/#/login">Login</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li ng-class="{active:isActive('/login')}"><a ng-href="/#/login">Login</a></li>
-      <li ng-show="isLoggedIn()"><a ng-click="logout()">Logout</a></li>
+      <li ng-class="{active:vm.isActive('/login')}"><a ng-href="/#/login">Login</a></li>
+      <li ng-show="vm.isLoggedIn()"><a ng-click="vm.logout()">Logout</a></li>
     </ul> 
   </div> <!-- .collapse -->
 </div><!-- .container -->

@@ -4,9 +4,7 @@
     .module('app.common')
     .service('trackEvents', trackEvents);
 
-  trackEvents.$inject = ['_'];
-
-  function trackEvents(_) {
+  function trackEvents() {
     var service = {
       record: record
     };
