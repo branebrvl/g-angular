@@ -29,7 +29,7 @@ module.exports = (grunt) ->
         files: ['bower.json']
         tasks: ['bowerInstall']
       js:
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.js']
+        files: ['<%= yeoman.app %>/scripts/{,*/}*.*']
         # tasks: ['newer:jshint:all']
         options:
           livereload: true
@@ -162,8 +162,8 @@ module.exports = (grunt) ->
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js'
             '<%= yeoman.dist %>/styles/{,*/}*.css'
-            '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-            '<%= yeoman.dist %>/styles/fonts/*'
+            # '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+            # '<%= yeoman.dist %>/styles/fonts/*'
           ]
 
     # Reads HTML for usemin blocks to enable smart builds that automatically
@@ -214,20 +214,8 @@ module.exports = (grunt) ->
         files: [
           expand: true
           cwd: '<%= yeoman.dist %>'
-          src: ['*.html', 'views/{,*/}*.html']
+          src: ['*.html', '{,*/}*.html']
           dest: '<%= yeoman.dist %>'
-        ]
-
-    # ngmin tries to make the code safe for minification automatically by
-    # using the Angular long form for dependency injection. It doesn't work on
-    # things like resolve or inject so those have to be done manually.
-    ngmin:
-      dist:
-        files: [
-          expand: true
-          cwd: '.tmp/concat/scripts'
-          src: '*.js'
-          dest: '.tmp/concat/scripts'
         ]
 
     # Replace Google CDN references
@@ -247,7 +235,8 @@ module.exports = (grunt) ->
             '*.{ico,png,txt}'
             '.htaccess'
             '*.html'
-            'views/{,*/}*.html'
+            # 'views/{,*/}*.html'
+            'scripts/{,*/}*.html'
             'images/{,*/}*.{webp}'
             'fonts/*']}
         {
@@ -283,6 +272,10 @@ module.exports = (grunt) ->
      # By default, your `index.html`'s <!-- Usemin block --> will take care of
      # minification. These next options are pre-configured if you do not wish
      # to use the Usemin blocks.
+
+     # uglify:
+     #   options:
+     #    mangle: false
      # uglify: {
      #   dist: {
      #     files: {
@@ -301,6 +294,25 @@ module.exports = (grunt) ->
       unit:
         configFile: 'karma.conf.coffee'
         singleRun: true
+
+    html2js:
+      options:
+        base: 'app'
+        module: 'app.templates'
+        singleModule: true
+        useStrict: true
+        htmlmin:
+          collapseBooleanAttributes: true
+          collapseWhitespace: true
+          removeAttributeQuotes: true
+          removeComments: true
+          removeEmptyAttributes: true
+          removeRedundantAttributes: true
+          removeScriptTypeAttributes: true
+          removeStyleLinkTypeAttributes: true
+      main:
+        src: ['app/views/**/*.html']
+        dest: 'app/scripts/core/populate.template.cache.js'
 
   grunt.registerTask 'serve',  (target) ->
     if target == 'release'
@@ -334,17 +346,18 @@ module.exports = (grunt) ->
     'useminPrepare'
     'concurrent:dist'
     # 'autoprefixer'
+    # 'html2js:main'
     'less'
     'styles'
     'concat'
-    'ngmin'
     'copy:dist'
     'cdnify'
     'cssmin'
     'uglify'
     'rev'
     'usemin'
-    'htmlmin']
+    'htmlmin'
+    ]
 
   grunt.registerTask 'default', [
     'newer:jshint'
