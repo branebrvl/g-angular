@@ -144,7 +144,7 @@ module.exports = (grunt) ->
           '<%= yeoman.dist %>/scripts/{,*/}*.js'
           '<%= yeoman.dist %>/styles/{,*/}*.css'
           '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-          '<%= yeoman.dist %>/styles/fonts/*'
+          '<%= yeoman.dist %>/fonts/*'
         ]
 
     # Reads HTML for usemin blocks to enable smart builds that automatically
@@ -296,6 +296,8 @@ module.exports = (grunt) ->
   grunt.registerTask 'serve',  (target) ->
     if target == 'release'
       grunt.task.run ['release', 'connect:dist:keepalive']
+    else if target == 'released'
+      grunt.task.run ['connect:dist:keepalive']
     else
       grunt.task.run [
         'clean:server'
