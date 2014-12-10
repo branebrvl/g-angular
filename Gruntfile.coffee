@@ -27,7 +27,7 @@ module.exports = (grunt) ->
     watch:
       bower:
         files: ['bower.json']
-        tasks: ['bowerInstall']
+        tasks: ['wiredep']
       js:
         files: ['<%= yeoman.app %>/scripts/{,*/}*.*']
         # tasks: ['newer:jshint:all']
@@ -70,25 +70,6 @@ module.exports = (grunt) ->
         files:
           'app/styles/custom.css': 'app/less/custom.less'
     
-    # This task simplifies working with CSS .Instead of manually specifying your
-    # stylesheets inside the configuration, you can use `@imports` and this task
-    # will concatenate only those paths.
-    styles:
-      # Out the concatenated contents of the following styles into the below
-      # development file path.
-      '.tmp/styles/index.css':
-        # Point this to where your `index.css` file is location.
-        src: 'app/styles/index.css'
-
-        # The relative path to use for the @imports.
-        paths: ['styles/']
-
-        # Point to where styles live.
-        prefix: 'app/styles/'
-
-        # Additional production-only stylesheets here.
-        additional: []
-
     # The actual grunt server settings
     connect:
       options:
@@ -109,6 +90,7 @@ module.exports = (grunt) ->
             '<%= yeoman.app %>']
       dist:
         options:
+          open: true
           base: '<%= yeoman.dist %>'
 
     # Make sure code styles are up to par and there are no obvious mistakes
@@ -117,7 +99,7 @@ module.exports = (grunt) ->
         jshintrc: '.jshintrc'
         reporter: require 'jshint-stylish'
       all: [
-        'Gruntfile.js'
+        'Gruntfile.coffee'
         '<%= yeoman.app %>/scripts/{,*/}*.js'
       ]
       test:
@@ -150,21 +132,20 @@ module.exports = (grunt) ->
         ]
 
     # Automatically inject Bower components into the app
-    bowerInstall:
+    wiredep:
       app:
         src: ['<%= yeoman.app %>/index.html']
-        ignorePath: '<%= yeoman.app %>/'
+        ignorePath: /\.\.\//
 
     # Renames files for browser caching purposes
-    rev:
+    filerev:
       dist:
-        files:
-          src: [
-            '<%= yeoman.dist %>/scripts/{,*/}*.js'
-            '<%= yeoman.dist %>/styles/{,*/}*.css'
-            # '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-            # '<%= yeoman.dist %>/styles/fonts/*'
-          ]
+        src: [
+          '<%= yeoman.dist %>/scripts/{,*/}*.js'
+          '<%= yeoman.dist %>/styles/{,*/}*.css'
+          '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+          '<%= yeoman.dist %>/styles/fonts/*'
+        ]
 
     # Reads HTML for usemin blocks to enable smart builds that automatically
     # concat, minify and revision files. Creates configurations in memory so
@@ -173,18 +154,46 @@ module.exports = (grunt) ->
       html: '<%= yeoman.app %>/index.html'
       options:
         dest: '<%= yeoman.dist %>'
+        flow:
+          html:
+            steps:
+              js: ['concat', 'uglifyjs']
+              css: ['cssmin']
+            post: {}
+
 
     # Performs rewrites based on rev and the useminPrepare configuration
     usemin:
       html: ['<%= yeoman.dist %>/{,*/}*.html']
       css: ['<%= yeoman.dist %>/styles/{,*/}*.css']
       options:
-        assetsDirs: ['<%= yeoman.dist %>']
+        assetsDirs: ['<%= yeoman.dist %>','<%= yeoman.dist %>/images']
 
-    # The following *-min tasks produce minified files in the dist folder
-    # cssmin:
-    #   options:
-    #     root: '<%= yeoman.app %>'
+    # The following *-min tasks will produce minified files in the dist folder
+    # By default, your `index.html`'s <!-- Usemin block --> will take care of
+    # minification. These next options are pre-configured if you do not wish
+    # to use the Usemin blocks.
+    # cssmin: {
+    #   dist: {
+    #     files: {
+    #       '<%= yeoman.dist %>/styles/main.css': [
+    #         '.tmp/styles/{,*/}*.css'
+    #       ]
+    #     }
+    #   }
+    # },
+    # uglify: {
+    #   dist: {
+    #     files: {
+    #       '<%= yeoman.dist %>/scripts/scripts.js': [
+    #         '<%= yeoman.dist %>/scripts/scripts.js'
+    #       ]
+    #     }
+    #   }
+    # },
+    # concat: {
+    #   dist: {}
+    # },
 
     imagemin:
       dist:
@@ -235,10 +244,9 @@ module.exports = (grunt) ->
             '*.{ico,png,txt}'
             '.htaccess'
             '*.html'
-            # 'views/{,*/}*.html'
             'scripts/{,*/}*.html'
             'images/{,*/}*.{webp}'
-            'fonts/*']}
+            'fonts/{,*/}*.*']}
         {
           expand: true
           cwd: '.tmp/images'
@@ -259,35 +267,6 @@ module.exports = (grunt) ->
         'copy:styles'
         'imagemin'
         'svgmin']
-
-    cssmin:
-      minify:
-        options:
-          banner: '/* Minified css file */'
-        expand: true
-        cwd: '.tmp/styles/'
-        src: 'index.css'
-        dest: 'dist/styles/'
-        ext: '.css'
-     # By default, your `index.html`'s <!-- Usemin block --> will take care of
-     # minification. These next options are pre-configured if you do not wish
-     # to use the Usemin blocks.
-
-     # uglify:
-     #   options:
-     #    mangle: false
-     # uglify: {
-     #   dist: {
-     #     files: {
-     #       '<%= yeoman.dist %>/scripts/scripts.js': [
-     #         '<%= yeoman.dist %>/scripts/scripts.js'
-     #       ]
-     #     }
-     #   }
-     # },
-     # concat: {
-     #   dist: {}
-     # },
 
     # Test settings
     karma:
@@ -320,7 +299,7 @@ module.exports = (grunt) ->
     else
       grunt.task.run [
         'clean:server'
-        'bowerInstall'
+        'wiredep'
         'concurrent:server'
         # 'autoprefixer'
         'less'
@@ -336,25 +315,23 @@ module.exports = (grunt) ->
     'concurrent:test'
     # 'autoprefixer'
     'less'
-    'styles'
     'connect:test'
     'karma']
 
   grunt.registerTask 'release', [
     'clean:dist'
-    'bowerInstall'
+    'wiredep'
     'useminPrepare'
     'concurrent:dist'
     # 'autoprefixer'
     # 'html2js:main'
     'less'
-    'styles'
     'concat'
     'copy:dist'
     'cdnify'
     'cssmin'
     'uglify'
-    'rev'
+    'filerev'
     'usemin'
     'htmlmin'
     ]
