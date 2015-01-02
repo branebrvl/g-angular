@@ -172,7 +172,7 @@
 
         var safeApply = function (fn) {
           var phase = $rootScope.$root.$$phase;
-          if (phase == '$apply' || phase == '$digest') {
+          if (phase === '$apply' || phase === '$digest') {
             if (fn && (typeof (fn) === 'function')) {
               fn();
             }
@@ -211,7 +211,7 @@
             preloader = image = event = null;
           });
         })
-          .prop("src", imageLocation);
+          .prop('src', imageLocation);
       }
     };
     // Return the factory instance.

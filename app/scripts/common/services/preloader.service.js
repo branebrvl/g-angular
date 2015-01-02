@@ -16,23 +16,31 @@
     // Preload the images; then, update display when returned.
     return {
       bind: function (images, eventHandlers) {
-        preloader.preloadImages(images).then(function handleResolve(imageLocations) {
+        preloader
+          .preloadImages(images)
+          .then(function handleResolve(imageLocations) {
 
           // Loading was successful.
           isLoading = false;
           isSuccessful = true;
 
-          eventHandlers['complete'] && eventHandlers['complete']();
+          if (eventHandlers['complete']) { 
+            eventHandlers['complete']();
+          }
         }, function handleReject(imageLocation) {
           // Loading failed on at least one image.
           isLoading = false;
           isSuccessful = false;
 
-          console.error("Image Failed", imageLocation);
-          eventHandlers['error'] && eventHandlers['error']();
+          console.error('Image Failed', imageLocation);
+          if (eventHandlers['error']) { 
+            eventHandlers['error']();
+          }
         }, function handleNotify(event) {
           percentLoaded = event.percent;
-          eventHandlers['progress'] && eventHandlers['progress'](percentLoaded);
+          if (eventHandlers['progress']) {
+            eventHandlers['progress'](percentLoaded);
+          }
         });
       }
     };

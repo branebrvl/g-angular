@@ -13,7 +13,7 @@
     vm.isLoggedIn = auth.isLoggedIn;
 
     vm.isActive = function (path) {
-      if (!$location.path()) return;
+      if (!$location.path()) {return;}
       var currentPath = $location.path().split('/')[1].split('?')[0];
       return currentPath === path.split('/')[1];
     };

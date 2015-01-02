@@ -11,8 +11,8 @@
     var vm = this;
 
     vm.user = {
-      email: "",
-      password: ""
+      email: '',
+      password: ''
     };
     vm.wrongCredentials = false;
 
@@ -25,7 +25,7 @@
     };
 
     function success(response) {
-      localStorage.setItem('auth_token', response.data.auth_token);
+      localStorage.setItem('auth_token', response.data.authToken);
       // $location.path('/admin');
     }
 
