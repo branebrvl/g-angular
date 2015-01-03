@@ -5,6 +5,7 @@ var gulp = require('gulp');
 var $ = require('gulp-load-plugins')({
   pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']
 });
+var debug = false;
 
 gulp.task('styles', ['wiredep', 'injector:css:preprocessor'], function () {
   return gulp.src(['app/less/custom.less'])
@@ -86,7 +87,12 @@ gulp.task('partials', function () {
     .pipe(gulp.dest('.tmp/inject/'));
 });
 
-gulp.task('html', ['wiredep', 'injector:css', 'injector:js', 'partials'], function () {
+gulp.task('copy', function () {
+  return gulp.src('app/scripts/**/*.html')
+    .pipe($.copy('dist/', {prefix: 1}));
+});
+
+gulp.task('html', ['wiredep', 'copy', 'injector:css', 'injector:js', 'partials'], function () {
   var htmlFilter = $.filter('*.html');
   var jsFilter = $.filter('**/*.js');
   var cssFilter = $.filter('**/*.css');
@@ -102,7 +108,14 @@ gulp.task('html', ['wiredep', 'injector:css', 'injector:js', 'partials'], functi
     .pipe($.rev())
     .pipe(jsFilter)
     .pipe($.ngAnnotate())
-    .pipe($.uglify({preserveComments: $.uglifySaveLicense}))
+    .pipe($.uglify({
+      preserveComments: $.uglifySaveLicense,
+      mangle: !debug,
+      outSourceMap: true,
+      output: {
+        beautify: debug
+      }
+    }))
     .pipe(jsFilter.restore())
     .pipe(cssFilter)
     .pipe($.replace('bower_components/bootstrap/fonts','fonts'))
@@ -148,4 +161,8 @@ gulp.task('clean', function (done) {
   $.del(['dist/', '.tmp/'], done);
 });
 
-gulp.task('build', ['html', 'images', 'fonts', 'misc']);
+gulp.task('set-debug', function() {
+  debug = true;
+});
+gulp.task('release', ['html', 'images', 'fonts', 'misc']);
+gulp.task('release:debug', ['set-debug', 'html', 'images', 'fonts', 'misc']);

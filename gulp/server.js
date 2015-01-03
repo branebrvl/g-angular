@@ -46,7 +46,11 @@ gulp.task('serve', ['watch'], function () {
   ]);
 });
 
-gulp.task('serve:dist', ['build'], function () {
+gulp.task('serve:release', ['release'], function () {
+  browserSyncInit('dist');
+});
+
+gulp.task('serve:release:debug', ['release:debug'], function () {
   browserSyncInit('dist');
 });
 
@@ -54,6 +58,6 @@ gulp.task('serve:e2e', ['wiredep', 'injector:js', 'injector:css'], function () {
   browserSyncInit(['app'], null, []);
 });
 
-gulp.task('serve:e2e-dist', ['build'], function () {
+gulp.task('serve:e2e-dist', ['release'], function () {
   browserSyncInit('dist', null, []);
 });
