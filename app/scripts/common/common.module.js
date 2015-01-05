@@ -1,7 +1,5 @@
 (function () {
   'use strict';
 
-  angular.module('app.common', [
-      'app.templates'
-  ]);
+  angular.module('app.common', []);
 })();

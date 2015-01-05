@@ -82,7 +82,8 @@ gulp.task('partials', function () {
       quotes: true
     }))
     .pipe($.angularTemplatecache('templateCacheHtml.js', {
-      module: 'app.templates'
+      module: 'app',
+      root: 'scripts'
     }))
     .pipe(gulp.dest('app/inject-partials/'));
 });
