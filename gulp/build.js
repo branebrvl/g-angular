@@ -27,20 +27,19 @@ gulp.task('styles', ['wiredep', 'injector:css:preprocessor'], function () {
 gulp.task('injector:css:preprocessor', function () {
   return gulp.src('app/less/custom.less')
     .pipe($.inject(gulp.src([
-        'app/{scripts,less,bower_components}/**/*.less',
+        'app/{scripts,less}/**/*.less',
         '!app/less/custom.less'
       ], {read: false}), {
       transform: function(filePath) {
-        filePath = filePath.replace('app/', '');
+        filePath = filePath.replace('app/less/', '');
         filePath = filePath.replace('app/scripts/', '../scripts/');
-        filePath = filePath.replace('app/bower_components/', '../bower_components/');
         return '@import \'' + filePath + '\';';
       },
       starttag: '// injector',
       endtag: '// endinjector',
       addRootSlash: false
     }))
-    .pipe(gulp.dest('app/styles/'));
+    .pipe(gulp.dest('app/less/'));
 });
 
 gulp.task('injector:css', ['styles'], function () {
