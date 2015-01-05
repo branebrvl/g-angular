@@ -82,9 +82,9 @@ gulp.task('partials', function () {
       quotes: true
     }))
     .pipe($.angularTemplatecache('templateCacheHtml.js', {
-      module: 'angular'
+      module: 'app.templates'
     }))
-    .pipe(gulp.dest('.tmp/inject/'));
+    .pipe(gulp.dest('app/inject-partials/'));
 });
 
 gulp.task('copy', function () {
@@ -99,19 +99,18 @@ gulp.task('html', ['wiredep', 'copy', 'injector:css', 'injector:js', 'partials']
   var assets;
 
   return gulp.src('app/*.html')
-    .pipe($.inject(gulp.src('.tmp/inject/templateCacheHtml.js', {read: false}), {
+    .pipe($.inject(gulp.src('app/inject-partials/templateCacheHtml.js', {read: false}), {
       starttag: '<!-- inject:partials -->',
-      ignorePath: '.tmp',
+      ignorePath: 'app',
       addRootSlash: false
     }))
     .pipe(assets = $.useref.assets())
     .pipe($.rev())
     .pipe(jsFilter)
-    .pipe($.ngAnnotate())
+    // .pipe($.ngAnnotate())
     .pipe($.uglify({
       preserveComments: $.uglifySaveLicense,
       mangle: !debug,
-      outSourceMap: true,
       output: {
         beautify: debug
       }
