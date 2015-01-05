@@ -88,8 +88,8 @@ gulp.task('partials', function () {
 });
 
 gulp.task('copy', function () {
-  return gulp.src('app/scripts/**/*.html')
-    .pipe($.copy('dist/', {prefix: 1}));
+    return gulp.src('app/{scripts,fonts}/**/*.{eot,svg,ttf,woff,html}')
+        .pipe($.copy('dist/', {prefix: 1}));
 });
 
 gulp.task('html', ['wiredep', 'copy', 'injector:css', 'injector:js', 'partials'], function () {
@@ -118,7 +118,8 @@ gulp.task('html', ['wiredep', 'copy', 'injector:css', 'injector:js', 'partials']
     .pipe(jsFilter.restore())
     .pipe(cssFilter)
     .pipe($.replace('bower_components/bootstrap/fonts','fonts'))
-    .pipe($.csso())
+    // .pipe($.csso())
+    .pipe($.cssmin())
     .pipe(cssFilter.restore())
     .pipe(assets.restore())
     .pipe($.useref())
