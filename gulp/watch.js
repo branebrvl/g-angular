@@ -2,14 +2,10 @@
 
 var gulp = require('gulp');
 
-// inject bower components
-gulp.task('wiredep', function () {
-  var wiredep = require('wiredep').stream;
-
-  return gulp.src('app/index.html')
-    .pipe(wiredep({
-      directory: 'app/bower_components',
-      exclude: [/bootstrap\.js/, /bootstrap\.css/]
-    }))
-    .pipe(gulp.dest('app'));
+gulp.task('watch', ['styles', 'injector:css', 'injector:js'] ,function () {
+  // gulp.watch('app/styles/**/*.css', ['injector:css']);
+  gulp.watch('app/{less,scripts}/**/*.less', ['styles']);
+  gulp.watch('app/scripts/**/*.js', ['injector:js']);
+  // gulp.watch('app/images/**/*', ['images']);
+  gulp.watch('bower.json', ['wiredep']);
 });
